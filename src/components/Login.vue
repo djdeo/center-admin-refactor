@@ -1,21 +1,15 @@
 <template>
   <div class="login">
     <a-form :label-col="labelCol" :wrapper-col="wrapperCol">
-      <a-form-item label="Username" v-bind="validateInfos.username">
-        <a-input v-model:value="modelRef.username" />
+      <a-form-item label="mobile" v-bind="validateInfos.mobile">
+        <a-input v-model:value="modelRef.mobile" />
       </a-form-item>
-      <a-form-item label="Activity zone" v-bind="validateInfos.region">
-        <a-select
-          v-model:value="modelRef.region"
-          placeholder="please select your zone"
-        >
-          <a-select-option value="shanghai">Zone one</a-select-option>
-          <a-select-option value="beijing">Zone two</a-select-option>
-        </a-select>
+      <a-form-item label="Password" v-bind="validateInfos.password">
+        <a-input-password placeholder="input password" v-model:value="modelRef.password" />
       </a-form-item>
       <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
-        <a-button type="primary" @click.prevent="onSubmit">Login</a-button>
-        <a-button style="margin-left: 10px" @click="resetFields"
+        <a-button type="primary" @click.prevent="onSubmit" @keypress.enter="onSubmit">Login</a-button>
+        <a-button style="margin-left: 10px" @click="resetFields" 
           >Reset</a-button
         >
       </a-form-item>
@@ -27,25 +21,26 @@
 import { defineComponent, reactive, toRaw } from "vue";
 import { useForm } from "@ant-design-vue/use";
 import { useRouter } from "vue-router";
+import { loginUser } from "../apis/login";
 
 export default defineComponent({
   setup() {
     const router = useRouter();
     const modelRef = reactive({
-      username: "",
-      region: undefined,
+      mobile: "",
+      password: "",
     });
     const rulesRef = reactive({
-      name: [
+      mobile: [
         {
           required: true,
-          message: "Please input name",
+          message: "Please input mobile",
         },
       ],
-      region: [
+      password: [
         {
           required: true,
-          message: "Please select region",
+          message: "Please input password",
         },
       ],
     });
@@ -53,13 +48,25 @@ export default defineComponent({
       modelRef,
       rulesRef
     );
+    const loginSystem = async () => {
+      try {
+        const res = await loginUser({...toRaw(modelRef),loginType:2})
+        console.log('res==>', res);
+        if(res?.code===0) {
+          const _token = res.tdata.token
+          localStorage.setItem('sitetoken', _token)
+          router.push('/')
+        }
+      } catch (error) {
+        console.log('error==>', error);
+      }
+
+    }
     const onSubmit = () => {
       validate()
         .then(() => {
           console.log(toRaw(modelRef));
-          console.log("--> ", router);
-
-          router.push("/");
+          loginSystem()
         })
         .catch((err) => {
           console.log("error", err);
