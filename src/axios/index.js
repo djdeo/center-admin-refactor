@@ -1,9 +1,6 @@
 import axios from "axios";
 import Router from '../router'
 
-console.log("mode", import.meta.env.MODE);
-console.log("url==>", import.meta.env);
-
 const request = axios.create({
     baseURL:import.meta.env.VITE_APP_API_BASE_URL,
     timeout:6000

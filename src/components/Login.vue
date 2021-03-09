@@ -1,19 +1,29 @@
 <template>
   <div class="login">
-    <a-form :label-col="labelCol" :wrapper-col="wrapperCol">
-      <a-form-item label="mobile" v-bind="validateInfos.mobile">
-        <a-input v-model:value="modelRef.mobile" />
-      </a-form-item>
-      <a-form-item label="Password" v-bind="validateInfos.password">
-        <a-input-password placeholder="input password" v-model:value="modelRef.password" />
-      </a-form-item>
-      <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
-        <a-button type="primary" @click.prevent="onSubmit" @keypress.enter="onSubmit">Login</a-button>
-        <a-button style="margin-left: 10px" @click="resetFields" 
-          >Reset</a-button
-        >
-      </a-form-item>
-    </a-form>
+    <a-card title="Login Center Admin">
+      <a-form :label-col="labelCol" :wrapper-col="wrapperCol">
+        <a-form-item label="mobile" v-bind="validateInfos.mobile">
+          <a-input v-model:value="modelRef.mobile" />
+        </a-form-item>
+        <a-form-item label="password" v-bind="validateInfos.password">
+          <a-input-password
+            placeholder="input password"
+            v-model:value="modelRef.password"
+          />
+        </a-form-item>
+        <a-form-item :wrapper-col="{ span: 14, offset: 5 }">
+          <a-button
+            type="primary"
+            @click.prevent="onSubmit"
+            @keypress.enter="onSubmit"
+            >Login</a-button
+          >
+          <a-button style="margin-left: 10px" @click="resetFields"
+            >Reset</a-button
+          >
+        </a-form-item>
+      </a-form>
+    </a-card>
   </div>
 </template>
 
@@ -50,31 +60,30 @@ export default defineComponent({
     );
     const loginSystem = async () => {
       try {
-        const res = await loginUser({...toRaw(modelRef),loginType:2})
-        console.log('res==>', res);
-        if(res?.code===0) {
-          const _token = res.tdata.token
-          localStorage.setItem('sitetoken', _token)
-          router.push('/')
+        const res = await loginUser({ ...toRaw(modelRef), loginType: 2 });
+        console.log("res==>", res);
+        if (res?.code === 0) {
+          const _token = res.tdata.token;
+          localStorage.setItem("sitetoken", _token);
+          router.push("/");
         }
       } catch (error) {
-        console.log('error==>', error);
+        console.log("error==>", error);
       }
-
-    }
+    };
     const onSubmit = () => {
       validate()
         .then(() => {
           console.log(toRaw(modelRef));
-          loginSystem()
+          loginSystem();
         })
         .catch((err) => {
           console.log("error", err);
         });
     };
     return {
-      labelCol: { span: 4 },
-      wrapperCol: { span: 14 },
+      labelCol: { span: 5 },
+      wrapperCol: { span: 16 },
       validateInfos,
       resetFields,
       modelRef,
